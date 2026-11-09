@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>غميضة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5f4;--card:#fff;--tx:#1b1f24;--g:#22a559;--r:#e5484d;--y:#f5c518;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#14171b;--card:#1f242a;--tx:#f1f3f5}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14171b;--card:#1f242a;--tx:#f1f3f5}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 Tajawal,system-ui,"Segoe UI",Tahoma,sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:780px;margin:0 auto;padding:16px}
+.c{text-align:center}
+.card{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 4px 18px #0001;margin:12px 0}
+input,select{width:100%;font:inherit;padding:14px;border-radius:14px;border:2px solid #8883;background:var(--bg);color:var(--tx);margin:6px 0}
+button{font:inherit;font-weight:700;border:0;border-radius:16px;padding:14px 18px;background:var(--tx);color:var(--bg);cursor:pointer;width:100%;margin:6px 0;transition:.2s}
+button:active{transform:scale(.97)}button:disabled{opacity:.4}
+.g{background:var(--g);color:#fff}.r{background:var(--r);color:#fff}.o{background:#8882;color:var(--tx)}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between}.row>button{flex:1}
+.logo{font-size:88px;text-align:center}
+.code{font-size:56px;letter-spacing:8px;text-align:center;font-weight:800;direction:ltr}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.pc{border-radius:22px;padding:14px;text-align:center;color:#fff;min-height:150px;transition:background .4s}
+.pc.h{background:var(--g)}.pc.s{background:var(--r)}.pc.f{background:var(--y);color:#222}
+.pc button{background:#0003;color:inherit;padding:8px;margin:4px 0}
+.av{font-size:44px}
+#bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:11;padding:8px 16px;text-align:center;color:#fff;background:var(--g);font-weight:800;border-radius:0 0 22px 22px}
+#bar.k{background:var(--r)}#bar.w #tm{animation:bl .5s infinite alternate}
+#tm{font-size:42px;direction:ltr;line-height:1.1}
+@keyframes bl{to{opacity:.3}}@keyframes fl{to{transform:translateY(110vh) rotate(360deg)}}
+.msg{max-width:82%;padding:8px 12px;border-radius:16px;margin:6px 0;background:#8882;width:fit-content}
+.msg.me{background:var(--g);color:#fff;margin-inline-start:auto}.msg small{display:block;opacity:.7;font-size:11px}
+#chat{position:fixed;inset:0;background:var(--bg);z-index:30;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 12px env(safe-area-inset-bottom,0px)}
+#ms{flex:1;overflow:auto}
+#toast{position:fixed;inset:auto 16px calc(18px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--tx);color:var(--bg);padding:12px 16px;border-radius:14px;text-align:center;font-weight:700}
+#dlg{position:fixed;inset:0;z-index:55;background:#0008;display:flex;align-items:center;justify-content:center;padding:20px}
+#dlg .card{max-width:360px;width:100%}
+@media(min-width:700px){.grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section id="s-err" hidden><div class="logo">⚠️</div><div class="card c">تعذّر الاتصال بقاعدة البيانات. افتح الرابط وأنت مسجّل الدخول إلى Claude، وبصلاحية «مساهم» على الأقل.</div></section>
+<section id="s-splash" hidden><div class="logo">🙈</div><h1 class="c">غميضة</h1><p class="c">لعبة الغميضة الواقعية مع أصدقائك</p>
+<div class="card"><input id="in" maxlength="20" placeholder="اكتب اسمك الذي سيظهر للاعبين"><button id="go">دخول</button></div></section>
+<section id="s-menu" hidden><div class="logo">🙈</div><h2 class="c">أهلاً <span id="nm"></span></h2>
+<button class="g" id="mc">إنشاء غرفة</button><button class="r" id="mj">دخول إلى غرفة</button><button class="o" id="mn">تغيير الاسم</button></section>
+<section id="s-create" hidden><h2>إنشاء غرفة</h2><div class="card">
+<label>عدد اللاعبين</label><select id="max"></select>
+<label>وقت الاختباء (دقائق)</label><select id="hm"></select>
+<label>وقت البحث (دقائق)</label><select id="sm"></select>
+<button class="g" id="mk">إنشاء الغرفة</button><button class="o" id="b1">رجوع</button></div></section>
+<section id="s-join" hidden><h2>دخول إلى غرفة</h2><div class="card">
+<input id="jc" inputmode="numeric" maxlength="6" placeholder="رمز الغرفة (6 أرقام)" style="text-align:center;font-size:24px;direction:ltr">
+<button class="r" id="jn">دخول</button><button class="o" id="b2">رجوع</button></div></section>
+<section id="s-lobby" hidden><h2 class="c">غرفة الانتظار</h2>
+<div class="card"><div class="c">رمز الغرفة</div><div class="code" id="lc"></div>
+<div class="row"><button class="o" id="cp">نسخ الرمز</button><button class="o" id="sh">مشاركة</button></div>
+<p class="c" id="lset"></p></div>
+<div class="c"><b id="lcnt"></b></div><div id="lp"></div>
+<p class="c" id="wt">بانتظار المضيف لبدء اللعبة…</p>
+<button class="g" id="st">ابدأ اللعبة</button><p class="c" id="need" hidden>يلزم لاعبان على الأقل للبدء</p>
+<div class="row"><button class="o" id="cb1">💬 دردشة</button><button class="o" id="lv">مغادرة الغرفة</button></div></section>
+<section id="s-game" hidden>
+<div id="bar"><div id="role"></div><div id="tm">0:00</div></div>
+<div class="card" id="hb" hidden><b>حان وقت إرسال تلميح عن مكانك!</b><input id="hi" maxlength="200" placeholder="اكتب تلميحاً"><button class="g" id="hs">إرسال التلميح</button></div>
+<div class="grid" id="grid" style="margin-top:12px"></div>
+<div id="hw" hidden><h3>التلميحات</h3><div id="hl"></div></div>
+<div class="row" style="margin-top:12px"><button class="o" id="cb2">💬 دردشة</button><button class="r" id="sr" hidden>استسلام</button></div></section>
+<section id="s-end" hidden><div class="logo">🏆</div><h1 class="c" id="ew"></h1>
+<div class="card" id="ed"></div>
+<div class="row"><button class="o" id="ex">خروج</button><button class="g" id="ct">متابعة</button></div></section>
+</main>
+<div id="chat" hidden><div class="row"><h3>الدردشة</h3><button class="o" id="cx" style="width:auto">إغلاق</button></div><div id="ms"></div>
+<div class="row"><input id="ci" maxlength="300" placeholder="اكتب رسالة"><button class="g" id="cs" style="width:auto">إرسال</button></div></div>
+<div id="dlg" hidden><div class="card c"><p id="qt"></p><div class="row"><button class="r" id="qy">تأكيد</button><button class="o" id="qn">إلغاء</button></div></div></div>
+<div id="toast" hidden></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+let db,uid,off=0,name=LS('name')||'',code,room,P=[],F=[],H=[],C=[],U=[],cont=0,lp='',lh=-1,warned='',cr=0;
+const now=()=>Date.now()+off,rnd=n=>{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n};
+const go=id=>$$('main>section').forEach(s=>s.hidden=s.id!==id);
+let tt;const toast=t=>{const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(tt);tt=setTimeout(()=>e.hidden=true,3500)};
+const W=async f=>{try{await f();return 1}catch(e){toast(e&&e.code==='invalid_argument'?'تحتاج صلاحية «مساهم» للعب (من قائمة المشاركة)':'تعذّر تنفيذ الطلب، حاول مجدداً')}};
+const ask=t=>new Promise(r=>{$('#qt').textContent=t;$('#dlg').hidden=false;$('#qy').onclick=()=>{$('#dlg').hidden=true;r(1)};$('#qn').onclick=()=>{$('#dlg').hidden=true;r(0)}});
+const fmt=ms=>{const s=Math.ceil(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const tm=t=>new Date(t).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});
+const opts=(id,a,u)=>$(id).innerHTML=a.map(v=>`<option value="${v}">${v} ${u}</option>`).join('');
+opts('#max',Array.from({length:19},(_,i)=>i+2),'لاعبين');opts('#hm',[1,2,3,5,10,15,20,30],'دقيقة');opts('#sm',[2,5,10,15,20,30,45,60],'دقيقة');
+$('#max').value=6;$('#hm').value=2;$('#sm').value=10;
+const menu=()=>{$('#nm').textContent=name;go('s-menu')};
+function phs(){if(!room)return'';if(room.status==='lobby')return'lobby';if(room.status==='ended')return'ended';const n=now();return n<room.hideEnd?'hiding':n<room.seekEnd?'seeking':'ended'}
+const hn=()=>Math.max(0,Math.floor((now()-room.hideEnd)/120000));
+const nm=id=>(room.roster.find(p=>p.id===id)||{}).name||'';
+const fset=()=>new Set(F.filter(f=>f.round===room.round).map(f=>f.uid));
+function cleanup(){U.forEach(f=>f());U=[];room=null;P=[];F=[];H=[];C=[];lp='';lh=-1}
+function enter(c){cleanup();code=c;LS('room',c);const er=e=>toast('تعذّر تحديث البيانات ('+(e&&e.code)+')');const col=n=>db.collection(`rooms/${c}/${n}`);
+U=[db.doc('rooms/'+c).onSnapshot(s=>{if(!s.exists){if(room)left('أُغلقت الغرفة');return}room=s.data();render()},er),
+col('players').onSnapshot(s=>{P=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.at-b.at);render()},er),
+col('found').onSnapshot(s=>{F=s.docs.map(d=>d.data());render()},er),
+col('hints').onSnapshot(s=>{H=s.docs.map(d=>d.data());render()},er),
+col('chat').orderBy('at','desc').limit(80).onSnapshot(s=>{C=s.docs.map(d=>d.data()).reverse();chatR()},er)]}
+function left(m){cleanup();code=null;LS('room',null);$('#chat').hidden=true;if(m)toast(m);menu()}
+function render(){if(!room||!code)return;const ph=phs(),v=ph==='lobby'||(ph==='ended'&&cont===room.round)?'lobby':ph==='ended'?'end':'game';go('s-'+v);v==='lobby'?lobby():v==='game'?game(ph):end()}
+function lobby(){const h=room.hostId===uid;$('#lc').textContent=code;$('#lcnt').textContent=P.length+' / '+room.max+' لاعبين';$('#lset').textContent=`الاختباء ${room.hideMin} د · البحث ${room.seekMin} د`;
+$('#lp').innerHTML=P.map(p=>`<div class="card row" style="margin:6px 0;padding:12px"><span>${p.id===room.hostId?'👑':'🙂'} ${esc(p.name)}${p.id===uid?' (أنت)':''}</span><b>${p.id===room.hostId?'المضيف':''}</b></div>`).join('');
+const can=h&&room.status==='lobby';$('#st').hidden=!can;$('#st').disabled=P.length<2;$('#need').hidden=!can||P.length>=2;$('#wt').hidden=h}
+function game(ph){const me=room.seekerId===uid,fs=fset(),n=hn(),cur=H.filter(h=>h.round===room.round&&h.n===n),hs=new Set(cur.map(h=>h.uid));
+$('#role').textContent=(me?'أنت الباحث 🔴 · ':'أنت مختبئ 🟢 · ')+(ph==='hiding'?'وقت الاختباء':'وقت البحث');
+$('#grid').innerHTML=room.roster.map(p=>{const s=p.id===room.seekerId,f=fs.has(p.id);let b='';
+if(me&&ph==='seeking'&&!s&&!f)b=`<button data-f="${p.id}">اكتشاف</button>`;if(f&&room.hostId===uid&&ph==='seeking')b=`<button data-u="${p.id}">تراجع (خطأ)</button>`;
+return`<div class="pc ${s?'s':f?'f':'h'}"><div class="av">${s?'🕵️':f?'😵':'🙈'}</div><b>${esc(p.name)}</b><div>${s?'الباحث':f?'تم اكتشافه ✔':'مختبئ'}</div>${!s&&!f&&ph==='seeking'&&hs.has(p.id)?'<small>📨 أرسل تلميحه</small>':''}${b}</div>`}).join('');
+$('#hb').hidden=!(ph==='seeking'&&!me&&n>=1&&!fs.has(uid)&&!hs.has(uid));
+$('#hw').hidden=!me;$('#hl').innerHTML=H.filter(h=>h.round===room.round).sort((a,b)=>b.at-a.at).map(h=>`<div class="msg"><small>${esc(h.name)} · ${tm(h.at)}</small>${esc(h.text)}</div>`).join('')||'<small>لا توجد تلميحات بعد</small>';
+$('#sr').hidden=!(me&&ph==='seeking')}
+function end(){const fs=fset(),hd=room.roster.filter(p=>p.id!==room.seekerId),fl=hd.filter(p=>fs.has(p.id)),sv=hd.filter(p=>!fs.has(p.id)),sw=!sv.length,d=(room.endedAt||room.seekEnd)-room.startAt;
+$('#ew').textContent=sw?`🎉 مبروك للباحث ${nm(room.seekerId)}!`:room.endReason==='surrender'?'🎉 مبروك للمختبئين! الباحث استسلم':'🎉 مبروك للمختبئين الناجين!';
+$('#ed').innerHTML=`<p>الفريق الفائز: <b>${sw?'الباحث':'المختبئون'}</b></p><p>الباحث: <b>${esc(nm(room.seekerId))}</b></p><p>المكتشفون: ${fl.map(p=>esc(p.name)).join('، ')||'—'}</p><p>الناجون: ${sv.map(p=>esc(p.name)).join('، ')||'—'}</p><p>مدة الجولة: ${fmt(Math.max(0,d))}</p>`;
+if(cr!==room.round){cr=room.round;conf()}}
+function conf(){for(let i=0;i<40;i++){const s=document.createElement('i');s.textContent=['🎉','✨','🎊'][i%3];s.style.cssText=`position:fixed;top:-30px;left:${rnd(100)}vw;font-size:${18+rnd(18)}px;animation:fl ${2+rnd(3)}s linear ${rnd(20)/10}s forwards;z-index:50`;document.body.append(s);setTimeout(()=>s.remove(),7000)}}
+function chatR(){const b=$('#ms'),bot=b.scrollTop+b.clientHeight>=b.scrollHeight-40;b.innerHTML=C.map(m=>`<div class="msg${m.uid===uid?' me':''}"><small>${esc(m.name)} · ${tm(m.at)}</small>${esc(m.text)}</div>`).join('');if(bot)b.scrollTop=b.scrollHeight}
+setInterval(()=>{if(!room||!code)return;const ph=phs();if(ph!==lp){const first=!lp;lp=ph;if(!first){if(ph==='hiding')toast('بدأت اللعبة! الباحث: '+nm(room.seekerId));if(ph==='seeking')toast('🔴 بدأ وقت البحث!')}render()}
+if(ph==='hiding'||ph==='seeking'){const ms=Math.max(0,(ph==='hiding'?room.hideEnd:room.seekEnd)-now());$('#tm').textContent=fmt(ms);$('#bar').className=(ph==='seeking'?'k':'')+(ms<=10000?' w':'');
+if(ms<=10000&&warned!==ph+room.round){warned=ph+room.round;toast('⏰ اقترب انتهاء الوقت!')}
+if(ph==='seeking'){const n=hn();if(n!==lh){if(lh>=0&&n>0&&room.seekerId!==uid)toast('حان وقت إرسال تلميح عن مكانك!');lh=n;render()}}}},250);
+async function disc(id){const p=room.roster.find(x=>x.id===id);if(!p||!await ask('تأكيد اكتشاف '+p.name+'؟'))return;const fs=fset();
+if(await W(()=>db.doc(`rooms/${code}/found/${room.round}_${id}`).set({round:room.round,uid:id,at:now()}))&&room.roster.filter(x=>x.id!==room.seekerId).every(x=>x.id===id||fs.has(x.id)))W(()=>db.doc('rooms/'+code).update({status:'ended',endReason:'all_found',endedAt:now()}))}
+async function join(c){if(!/^\d{6}$/.test(c))return toast('أدخل رمزاً من 6 أرقام');try{const r=await db.doc('rooms/'+c).get();if(!r.exists)return toast('رمز الغرفة غير صحيح');const d=r.data(),ps=await db.collection(`rooms/${c}/players`).get();
+if(!ps.docs.some(x=>x.id===uid)){if(d.status!=='lobby')return toast('اللعبة بدأت بالفعل، لا يمكن الدخول');if(ps.size>=d.max)return toast('الغرفة ممتلئة');if(!await W(()=>db.doc(`rooms/${c}/players/${uid}`).set({name,at:now()})))return}enter(c)}catch(e){toast('تعذّر الاتصال بالغرفة')}}
+async function leave(){const c=code,o=P.filter(p=>p.id!==uid);await W(async()=>{if(room&&room.hostId===uid){if(o.length)await db.doc('rooms/'+c).update({hostId:o[0].id,hostName:o[0].name});else await db.doc('rooms/'+c).delete()}await db.doc(`rooms/${c}/players/${uid}`).delete()});left()}
+$('#go').onclick=()=>{const v=$('#in').value.trim();if(!v)return toast('اكتب اسمك أولاً');name=v;LS('name',v);menu()};
+$('#in').onkeydown=e=>e.key==='Enter'&&$('#go').click();
+$('#mn').onclick=()=>{$('#in').value=name;go('s-splash')};$('#mc').onclick=()=>go('s-create');$('#mj').onclick=()=>{$('#jc').value='';go('s-join')};$('#b1').onclick=$('#b2').onclick=menu;
+$('#mk').onclick=async()=>{let c;for(let i=0;i<5;i++){c=String(100000+rnd(900000));if(!(await db.doc('rooms/'+c).get()).exists)break}
+if(await W(async()=>{await db.doc('rooms/'+c).set({hostId:uid,hostName:name,max:+$('#max').value,hideMin:+$('#hm').value,seekMin:+$('#sm').value,status:'lobby',round:1,roster:[],seekerId:null,at:now()});await db.doc(`rooms/${c}/players/${uid}`).set({name,at:now()})}))enter(c)};
+$('#jn').onclick=()=>join($('#jc').value.trim());$('#jc').onkeydown=e=>e.key==='Enter'&&join($('#jc').value.trim());
+$('#lv').onclick=leave;$('#ex').onclick=leave;
+$('#st').onclick=()=>{if(room.hostId!==uid||P.length<2)return;const t=now();W(()=>db.doc('rooms/'+code).update({status:'playing',seekerId:P[rnd(P.length)].id,roster:P.map(p=>({id:p.id,name:p.name})),startAt:t,hideEnd:t+room.hideMin*60000,seekEnd:t+(room.hideMin+room.seekMin)*60000,endReason:null,endedAt:null}))};
+$('#ct').onclick=()=>{if(room.hostId===uid)W(()=>db.doc('rooms/'+code).update({status:'lobby',round:room.round+1,roster:[],seekerId:null}));else{cont=room.round;render()}};
+$('#sr').onclick=async()=>{if(await ask('هل تريد الاستسلام؟ سيفوز جميع المختبئين.'))W(()=>db.doc('rooms/'+code).update({status:'ended',endReason:'surrender',endedAt:now()}))};
+$('#grid').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.f)disc(b.dataset.f);else if(b.dataset.u)W(()=>db.doc(`rooms/${code}/found/${room.round}_${b.dataset.u}`).delete())};
+$('#hs').onclick=async()=>{const t=$('#hi').value.trim(),n=hn();if(!t||n<1)return;if(await W(()=>db.doc(`rooms/${code}/hints/${room.round}_${n}_${uid}`).set({round:room.round,n,uid,name,text:t.slice(0,200),at:now()}))){$('#hi').value='';toast('تم إرسال التلميح ✔')}};
+$('#cb1').onclick=$('#cb2').onclick=()=>{$('#chat').hidden=false;chatR();$('#ms').scrollTop=1e9};$('#cx').onclick=()=>$('#chat').hidden=true;
+$('#cs').onclick=async()=>{const t=$('#ci').value.trim();if(!t||!room)return;$('#ci').value='';await W(()=>db.collection(`rooms/${code}/chat`).add({uid,name,text:t.slice(0,300),at:now()}))};$('#ci').onkeydown=e=>e.key==='Enter'&&$('#cs').click();
+function cp(t){const fb=()=>{const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();let ok=0;try{ok=document.execCommand('copy')}catch(e){}a.remove();toast(ok?'تم النسخ ✔':'الرمز: '+code)};try{navigator.clipboard.writeText(t).then(()=>toast('تم النسخ ✔'),fb)}catch(e){fb()}}
+$('#cp').onclick=()=>cp(code);
+$('#sh').onclick=async()=>{const t='انضم إلى غرفتي في لعبة غميضة! الرمز: '+code;try{if(navigator.share)return await navigator.share({text:t})}catch(e){if(e&&e.name==='AbortError')return}cp(t)};
+addEventListener('offline',()=>toast('انقطع الاتصال… سيعاد الاتصال تلقائياً'));addEventListener('online',()=>toast('عاد الاتصال ✔'));
+(async()=>{try{const u=await claude.use('user');db=await claude.use('db');uid=u&&await u.id()}catch(e){}
+if(!db||!uid)return go('s-err');
+try{const t0=Date.now(),r=await db.doc('data/users/'+uid+'/clock').acquire({holder:uid,ttlMs:1000});if(r.expiresAt)off=Date.parse(r.expiresAt)-1000-(t0+Date.now())/2}catch(e){}
+const c=LS('room');if(c&&name){try{const p=await db.doc(`rooms/${c}/players/${uid}`).get();if(p.exists)return enter(c)}catch(e){}LS('room',null)}
+name?menu():go('s-splash')})();
+</script>
+</body>
+</html>
